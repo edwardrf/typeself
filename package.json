@@ -1,0 +1,10 @@
+{
+  "name": "FontAnalyse",
+  "version": "0.0.1",
+  "description": "Analyse the pixel density of characters of a font",
+  "author": "Edward Jiang",
+  "dependencies": {
+    "async": "0.2.x",
+    "pngjs": "0.4.0"
+  }
+}
