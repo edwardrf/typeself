@@ -5,6 +5,7 @@
   "author": "Edward Jiang",
   "dependencies": {
     "async": "0.2.x",
-    "pngjs": "0.4.0"
+    "pngjs": "0.4.0",
+    "q" : "~1.0.1"
   }
 }
