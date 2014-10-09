@@ -2,3 +2,4 @@ logs
 *.log
 .grunt
 node_modules
+output
