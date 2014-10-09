@@ -2,8 +2,8 @@ var Q       = require('q');
 var Font    = require('./modules/font');
 var Raster  = require('./modules/raster');
 
-var hStep = 8;
-var vStep = 8;
+var hStep = 2;
+var vStep = 2;
 
 if(process.argv.length < 4) {
   console.log('Usage: node ' + __filename + ' INPUT.png OUTPUT.png');
@@ -30,46 +30,67 @@ Font.whenReady().then(function(){
 
     // Start estimation
     var target = new Raster(inImg.width, inImg.height);
-    for(var i = 0; i + sampleSize < inImg.height; i += vStep){
-      for(var j = 0; j + sampleSize < inImg.width; j += hStep){
-        var bestChar = charMap[i / vStep][j / hStep];
+
+    for(var k = 0; k < 4; k++) {
+      for(var i = 0; i < (inImg.height - sampleSize) / vStep; i++){
+        if(i % 10 == 0) console.log('I ', i);
+        for(var j = 0; j < (inImg.width - sampleSize) / hStep; j++){
+          fitChar(i,j);
+        }
+      }
+    }
+    console.log('done middle');
+    target.write("output/middle.png");
+
+    for(var r = 0; r < 10000; r++) {
+      if(r % 100 == 0) console.log('R ', r);
+      var i = Math.floor(Math.random() * (inImg.width - sampleSize) / vStep);
+      var j = Math.floor(Math.random() * (inImg.height - sampleSize) / hStep);
+      fitChar(i, j);
+    }
+
+    target.write(outputfile);
+
+    function fitChar(i, j){
+      var bestChar = charMap[i][j];
+
+      // Ignore low color blocks
+      var sampleSize = Math.max(Font.width, Font.height);
+      var sampleValue = bestChar == '_' ? inImg.sample(j * hStep, i * vStep, sampleSize) : Infinity;
+      // if(sampleValue > 0) console.log(sampleValue, j * hStep, i * vStep, sampleSize);
+      if(sampleValue / sampleSize / sampleSize > 0) {
         var bestScore = Infinity;
-        // console.log(j, i);
-        // console.log('x', j, i, bestChar);
-        target.unpaint(j, i, Font[bestChar]);
+        if(!Font[bestChar]) console.log(j * hStep, i * vStep, bestChar);
+        target.unpaint(j * hStep, i * vStep, Font[bestChar]);
         for(var k in Font.chars) {
           var c = Font.chars[k];
           var score = 0;
 
-          if(!Font[c]) console.log(c);
-
-          target.paint(j, i, Font[c]);
-          var sizeLimit = 5;//Math.min(hStep, vStep);
-          for(var size = 4; size < sizeLimit; size += 2) {
-            var diff = Raster.diff(inImg, target, j, i, Font.width, Font.height, size);
+          target.paint(j * hStep, i * vStep, Font[c]);
+          var sizeLimit = 4;//Math.min(hStep, vStep);
+          for(var size = 1; size < sizeLimit; size += 2) {
+            var diff = Raster.diff(inImg, target, j * hStep, i * vStep, Font.width, Font.height, size);
             // console.log(diff);
-            // score += (diff[0] + diff[1] * 100) * Math.pow(1, (sizeLimit - size));
-            score += (diff[0] + diff[1]);
+            score += (diff[0] + diff[1]);// * Math.pow(1, (sizeLimit - size));
+            // score += (diff[0] + diff[1]);
           }
-          // console.log('y', j, i, c);
-          target.unpaint(j, i, Font[c]);
+          // console.log('y', j * hStep, i * vStep, c);
+          target.unpaint(j * hStep, i * vStep, Font[c]);
           if(score < bestScore){
             bestScore = score;
             bestChar = c
           }
         }
-        if(c != '_') {
-          target.paint(j, i, Font[bestChar]);
-          charMap[i/vStep][j/hStep] = bestChar;
-        }
+      }else {
+        bestChar = '_';
+      }
+
+      if(c != '_') {
+        target.paint(j * hStep, i * vStep, Font[bestChar]);
+        charMap[i][j] = bestChar;
       }
     }
 
-    target.write(outputfile).then(function(){
-      for(var i = 0; i < charMap.length; i++) {
-        // console.log(charMap.join());
-      }
-    });
   });
 }).fail(function(err) {
   console.log(err);
