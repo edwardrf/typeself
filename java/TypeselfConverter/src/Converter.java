@@ -29,7 +29,7 @@ public class Converter {
 	}
 	
 	public void convert() {
-		for (int k = 0; k < 6; k++) {
+		for (int k = 0; k < 16; k++) {
 			System.out.println("Run number : " + (k + 1));
 			int changes = 0;
 			for (int i = 0; i < (target.getHeight() - font.getHeight()) / vStep; i++) {
@@ -46,7 +46,7 @@ public class Converter {
 		
 		// Ignore mostly empty spaces
 		int sampleSize = Math.max(font.getWidth(), font.getHeight());
-	    int sampleValue = bestChar == '_' ? target.sample(col * hStep, row * vStep, sampleSize) : Integer.MAX_VALUE;
+	    int sampleValue = bestChar == ' ' ? target.sample(col * hStep, row * vStep, sampleSize) : Integer.MAX_VALUE;
 	    if(sampleValue / sampleSize / sampleSize < 5) return false;
 	    
 	    // Remove the currently fitted character first

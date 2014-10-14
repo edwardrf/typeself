@@ -1,8 +1,0 @@
-
-public class Font {
-
-	public Font(File dir) {
-		
-	}
-	
-}

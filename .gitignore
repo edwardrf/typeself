@@ -3,3 +3,5 @@ logs
 .grunt
 node_modules
 output
+java/.metadata
+java/RemoteSystemsTempFiles
