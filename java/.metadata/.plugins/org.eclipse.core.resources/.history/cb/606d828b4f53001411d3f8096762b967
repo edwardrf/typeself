@@ -1,0 +1,46 @@
+import java.io.File;
+import java.io.IOException;
+
+
+public class Converter {
+
+	Raster target, canvas;
+	int width, height;
+	String outputFilename;
+	Font font;
+	char [][] charMap;
+	int vStep = 4, hStep = 4;
+	
+	public Converter(String input, String output, String fontname) throws IOException{
+		target = new Raster(new File(input));
+		canvas = new Raster(target.getWidth(), target.getHeight());
+		outputFilename = output;
+		font = new Font(new File(fontname));
+
+	    int charCount = 0;
+	    for(int i = 0; i + font.getHeight() < target.getHeight(); i += vStep){
+	    	for(int j = 0; j + font.getWidth() < target.getWidth(); j += hStep){
+	        
+	    	}
+	    }
+
+		
+	}
+	
+	public void save() throws IOException {
+		File outfile = new File(outputFilename);
+		canvas.save(outfile);
+		System.out.println(outfile.getAbsoluteFile());
+	}
+	
+	public static void main(String[] args) throws IOException {
+		if(args.length < 2) {
+			System.out.println("Usage: java Converter INPUT_IMG OUTPUT_IMG FONT_DIR");
+		}else {
+			Converter c = new Converter(args[0], args[1]);
+
+			c.save();
+		}
+	}
+
+}

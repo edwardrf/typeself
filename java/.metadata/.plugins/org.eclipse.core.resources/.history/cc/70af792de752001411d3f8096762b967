@@ -1,0 +1,11 @@
+
+public class Converter {
+
+	public static void main(String[] args) {
+		if(args.length < 2) {
+			System.out.println("Usage: java Converter INPUT_IMG OUTPUT_IMG");
+		}
+
+	}
+
+}

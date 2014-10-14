@@ -1,0 +1,16 @@
+import java.io.File;
+import java.io.FileFilter;
+import java.util.regex.Pattern;
+
+
+public class Font {
+
+	public Font(File dir) {
+		File [] fontFiles = dir.listFiles(new FileFilter(){
+			public boolean accept(File file) {
+				return file.isFile() && Pattern.matches(".\\.(jpg|png)", file.getName());
+			}
+		});
+	}
+	
+}

@@ -1,0 +1,73 @@
+import java.io.File;
+import java.io.IOException;
+
+
+public class Converter {
+
+	Raster target, canvas;
+	int width, height;
+	String outputFilename;
+	Font font;
+	char [][] charMap;
+	int vStep = 4, hStep = 4;
+	int charCount = 0;
+	
+	public Converter(String input, String output, String fontpath) throws IOException{
+		target = new Raster(new File(input));
+		canvas = new Raster(target.getWidth(), target.getHeight());
+		outputFilename = output;
+		font = new Font(new File(fontpath));
+
+	    for(int i = 0; i + font.getHeight() < target.getHeight(); i += vStep){
+	    	for(int j = 0; j + font.getWidth() < target.getWidth(); j += hStep){
+	    		charMap[i][j] = ' ';
+	    	}
+	    }
+	}
+	
+	public void fitChar(int row, int col) {
+		char bestChar = charMap[row][col];
+		
+		// Ignore mostly empty spaces
+		int sampleSize = Math.max(font.getWidth(), font.getHeight());
+	    int sampleValue = bestChar == '_' ? target.sample(col * hStep, row * vStep, sampleSize) : Integer.MAX_VALUE;
+	    if(sampleValue / sampleSize / sampleSize < 5) return;
+	    
+	    // Remove the currently fitted character first
+    	if(bestChar != ' ') {
+	    	canvas.unpaint(col * hStep, row * vStep, font.getChar(bestChar));
+	    	charCount --;
+    	}
+    	int bestScore = Integer.MAX_VALUE;
+    	
+	    // Then fit every possible char in the charSet
+	    for(Character c : font.getCharSet()) {
+	    	canvas.paint(col * hStep, row * vStep, font.getChar(c));
+	    	// Try out different sample size for a total score
+	    	for(int size = 1; size < sizeLimit; size += 2) {
+	    		int diff = Raster.diff(inImg, target, j * hStep, i * vStep, Font.width, Font.height, size);
+	    		score += (diff[0] + diff[1]);
+            }
+	    	
+	    	// 
+	    }
+	}
+	
+	
+	public void save() throws IOException {
+		File outfile = new File(outputFilename);
+		canvas.save(outfile);
+		System.out.println(outfile.getAbsoluteFile());
+	}
+	
+	public static void main(String[] args) throws IOException {
+		if(args.length < 2) {
+			System.out.println("Usage: java Converter INPUT_IMG OUTPUT_IMG FONT_DIR");
+		}else {
+			Converter c = new Converter(args[0], args[1], args[2]);
+
+			c.save();
+		}
+	}
+
+}

@@ -1,0 +1,10 @@
+import java.io.File;
+
+
+public class Raster {
+
+	public Raster(File image) {
+		
+	}
+	
+}

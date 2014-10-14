@@ -1,0 +1,10 @@
+import java.io.File;
+
+
+public class Font {
+
+	public Font(File dir) {
+		
+	}
+	
+}

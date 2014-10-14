@@ -90,7 +90,7 @@ Font.whenReady().then(function(){
         bestChar = '_';
       }
 
-      if(c != '_') {
+      if(bestChar != '_') {
         target.paint(j * hStep, i * vStep, Font[bestChar]);
         charMap[i][j] = bestChar;
         charCount ++;
