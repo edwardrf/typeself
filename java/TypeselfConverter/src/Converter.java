@@ -14,6 +14,7 @@ public class Converter {
 	
 	public Converter(String input, String output, String fontpath) throws IOException{
 		target = new Raster(new File(input));
+//		target.brightness(0.6);
 		canvas = new Raster(target.getWidth(), target.getHeight());
 		outputFilename = output;
 		font = new Font(new File(fontpath));
@@ -38,6 +39,7 @@ public class Converter {
 				}
 			}
 			System.out.println("Changed characters : " + changes);
+			if(changes == 0) break;
 		}
 	}
 	
@@ -47,7 +49,7 @@ public class Converter {
 		// Ignore mostly empty spaces
 		int sampleSize = Math.max(font.getWidth(), font.getHeight());
 	    int sampleValue = bestChar == ' ' ? target.sample(col * hStep, row * vStep, sampleSize) : Integer.MAX_VALUE;
-	    if(sampleValue / sampleSize / sampleSize < 5) return false;
+	    if(sampleValue / sampleSize / sampleSize < 1) return false;
 	    
 	    // Remove the currently fitted character first
     	if(bestChar != ' ') {
@@ -61,7 +63,7 @@ public class Converter {
 	    	int score = 0;
 	    	canvas.paint(col * hStep, row * vStep, font.getChar(c));
 	    	// Try out different sample size for a total score
-	    	for(int size = 1; size < 4; size += 2) {
+	    	for(int size = 1; size < 2; size += 2) {
 	    		int [] diff = Raster.diff(target, canvas, col * hStep, row * vStep, font.getWidth(), font.getHeight(), size);
 	    		score += (diff[0] + diff[1]);
             }
@@ -82,6 +84,10 @@ public class Converter {
 	    return changed;
 	}
 	
+	public int getCharCount() {
+		return charCount;
+	}
+
 	public void print(){
 		for(int i = 0; i < charMap.length; i++) {
 			for(int j = 0; j < charMap[i].length; j++) {
@@ -104,6 +110,7 @@ public class Converter {
 			c.convert();
 			c.save();
 			c.print();
+			System.out.println("Total char count: " + c.getCharCount());
 		}
 	}
 
