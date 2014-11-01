@@ -14,7 +14,7 @@ public class Converter {
 	
 	public Converter(String input, String output, String fontpath) throws IOException{
 		target = new Raster(new File(input));
-//		target.brightness(0.6);
+		target.brightness(0.8);
 		canvas = new Raster(target.getWidth(), target.getHeight());
 		outputFilename = output;
 		font = new Font(new File(fontpath));
@@ -31,14 +31,14 @@ public class Converter {
 	
 	public void convert() {
 		for (int k = 0; k < 16; k++) {
-			System.out.println("Run number : " + (k + 1));
+			System.err.println("Run number : " + (k + 1));
 			int changes = 0;
 			for (int i = 0; i < (target.getHeight() - font.getHeight()) / vStep; i++) {
 				for (int j = 0; j < (target.getWidth() - font.getWidth()) / hStep; j++) {
 					if(fitChar(i, j)) changes ++;
 				}
 			}
-			System.out.println("Changed characters : " + changes);
+			System.err.println("Changed characters : " + changes);
 			if(changes == 0) break;
 		}
 	}
@@ -78,9 +78,9 @@ public class Converter {
 	    boolean changed = bestChar != charMap[row][col];
 	    if(bestChar != ' '){
 	    	canvas.paint(col * hStep, row * vStep, font.getChar(bestChar));
-	    	charMap[row][col] = bestChar;
 	    	charCount ++;
 	    }
+    	charMap[row][col] = bestChar;
 	    return changed;
 	}
 	
@@ -107,10 +107,11 @@ public class Converter {
 			System.out.println("Usage: java Converter INPUT_IMG OUTPUT_IMG FONT_DIR");
 		}else {
 			Converter c = new Converter(args[0], args[1], args[2]);
+			System.out.println("~Cr"); // Fix the default color as it is reversed on the printer
 			c.convert();
 			c.save();
 			c.print();
-			System.out.println("Total char count: " + c.getCharCount());
+			System.err.println(args[0] +  " Total char count: " + c.getCharCount());
 		}
 	}
 
