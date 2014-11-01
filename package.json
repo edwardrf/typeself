@@ -6,6 +6,8 @@
   "dependencies": {
     "async": "0.2.x",
     "pngjs": "0.4.0",
-    "q" : "~1.0.1"
+    "q" : "~1.0.1",
+    "serialport": "1.4.x",
+    "string.prototype.startswith": "0.2.x"
   }
 }
