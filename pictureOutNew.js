@@ -101,7 +101,7 @@ async.waterfall([
   sp.list,
   function(ports, callback){
     console.log(ports);
-    serialPort = new SerialPort(ports[0].comName, {
+    serialPort = new SerialPort(ports[ports.length - 1].comName, {
       baudrate: 115200,
       parser: sp.parsers.readline("\r\n")
     });
