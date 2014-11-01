@@ -30,7 +30,7 @@ async.waterfall([
       cmdBuf += 'p' + name.charAt(i);
       cmdBuf += 'm0 ' + moveUnit;
     }
-    cmdBuf += 'Rr1 22000';
+    cmdBuf += 'Rr1 20000';
     callback();
   },
   sp.list,
