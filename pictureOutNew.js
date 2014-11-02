@@ -102,7 +102,7 @@ async.waterfall([
   function(ports, callback){
     console.log(ports);
     serialPort = new SerialPort(ports[ports.length - 1].comName, {
-      baudrate: 115200,
+      baudrate: 9600,
       parser: sp.parsers.readline("\r\n")
     });
     setTimeout(function(){
