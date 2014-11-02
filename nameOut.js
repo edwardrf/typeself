@@ -51,6 +51,8 @@ async.waterfall([
   },
   function(callback){
     console.log('Port opened');
+    serialPort.write('x');// Dummy command to initiate communicate for MAC
+
     serialPort.on('data', function(data) {
       if(finishedHandler) clearTimeout(finishedHandler);
       console.log('DATA : ', data);
