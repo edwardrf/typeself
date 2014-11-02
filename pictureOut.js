@@ -14,6 +14,9 @@ var inputFilename;
 var rollUnit = 1200; // For picture print, it is 495/50?
 var moveUnit = 200;
 
+
+var finishedHandler = null;
+
 if(process.argv[2]) inputFilename = process.argv[2];
 if(process.argv[3]) rollUnit = parseInt(process.argv[3]);
 if(process.argv[4]) moveUnit = parseInt(process.argv[4]);
@@ -75,6 +78,7 @@ async.waterfall([
   function(callback){
     console.log('Port opened');
     serialPort.on('data', function(data) {
+      if(finishedHandler) clearTimeout(finishedHandler);
       console.log('DATA : ', data);
       if(!started) {
         // Wait for the printer to be ready;
@@ -135,7 +139,9 @@ async.waterfall([
           // console.log('d');
         }
         console.log('done');
-        if(content.length == 0 && bufLen == 0) callback(null);
+        if(cmdBuf.length == 0 && bufLen == 0){
+          finishedHandler = setTimeout(callback, 3000);
+        }
       }
     });
   }
@@ -143,8 +149,7 @@ async.waterfall([
 ], function(err) {
   console.log(err);
   console.log("All Done");
-  setTimeout(function(){
-    serialPort.close();
-    process.exit(0);
-  }, 3000);
+  serialPort.close(function(err) {
+    console.log('Port closed');
+  });
 });

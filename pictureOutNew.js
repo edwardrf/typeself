@@ -14,12 +14,12 @@ var cmdBuf = '';
 
 var rollUnit = 1200; // For picture print, it is 425/90
 var moveUnit = 200;
+var finishedHandler = null;
 
 // Ascii :  !, ", #, $, %, &, ', (, ), *, +, ,, -, ., /, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, :, ;, <, =, >, ?, @, A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U, V, W, X, Y, Z, [, \, ], ^, _, `, a, b, c, d, e, f, g, h, i, j, k, l, m, n, o, p, q, r, s, t, u, v, w, x, y, z, {, |, }, ~
 var krow = [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 4, 1, 4, 4, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 3, 3, 2, 1, 2, 4, 3, 3, 4, 4, 3, 2, 3, 3, 3, 2, 3, 3, 3, 4, 4, 2, 2, 2, 2, 3, 2, 2, 4, 2, 4, 2, 4,-1, 3,-1,-1, 1,-1, 3, 4, 4, 3, 2, 3, 3, 3, 2, 3, 3, 3, 4, 4, 2, 2, 2, 2, 3, 2, 2, 4, 2, 4, 2, 4,-1, 4,-1,-1];
 var kcol = [1, 2, 3, 4, 5, 7, 8, 9,10,11,12, 8,11, 9,10,10, 1, 2, 3, 4, 5, 6, 7, 8, 9,10,10,11,12,11,10,11, 1, 5, 3, 3, 3, 4, 5, 6, 8, 7, 8, 9, 7, 6, 9,10, 1, 4, 2, 5, 7, 4, 2, 2, 6, 1,-1,11,-1,-1, 6,-1, 1, 5, 3, 3, 3, 4, 5, 6, 8, 7, 8, 9, 7, 6, 9,10, 1, 4, 2, 5, 7, 4, 2, 2, 6, 1,-1,10,-1,-1];
 var ksft = [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,-1, 0,-1,-1, 1,-1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,-1, 0,-1,-1];
-
 
 if(process.argv[2]) inputFilename = process.argv[2];
 if(process.argv[3]) rollUnit = parseInt(process.argv[3]);
@@ -115,6 +115,7 @@ async.waterfall([
   function(callback){
     console.log('Port opened');
     serialPort.on('data', function(data) {
+      if(finishedHandler) clearTimeout(finishedHandler);
       console.log('DATA : ', data);
       if(!started) {
         // Wait for the printer to be ready;
@@ -145,7 +146,9 @@ async.waterfall([
           margin --;
         }
         console.log('done');
-        if(cmdBuf.length == 0 && bufLen == 0) callback(null);
+        if(cmdBuf.length == 0 && bufLen == 0){
+          finishedHandler = setTimeout(callback, 3000);
+        }
       }
     });
   }
@@ -153,8 +156,7 @@ async.waterfall([
 ], function(err) {
   console.log(err);
   console.log("All Done");
-  setTimeout(function(){
-    serialPort.close();
-    process.exit(0);
-  }, 3000);
+  serialPort.close(function(err) {
+    console.log('Port closed');
+  });
 });
