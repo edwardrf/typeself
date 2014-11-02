@@ -156,5 +156,6 @@ async.waterfall([
   console.log("All Done");
   serialPort.close(function(err) {
     console.log('Port closed');
+    process.exit(0);
   });
 });
