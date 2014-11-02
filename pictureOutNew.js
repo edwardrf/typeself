@@ -136,7 +136,7 @@ async.waterfall([
 
         var margin = 30 - bufLen;
         // console.log('PF', !pauseFlag, content, 'C');
-        while(margin > 0 && cmdBuf.length > 0) {
+        while(margin > 0 && cmdBuf.length > 0 && !pauseFlag) {
           var char = cmdBuf.charAt(0);
           cmdBuf = cmdBuf.substr(1);
           console.log("Writting", char);
