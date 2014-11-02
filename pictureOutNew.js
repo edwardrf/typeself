@@ -120,7 +120,7 @@ async.waterfall([
       console.log('DATA : ', data);
       if(!started) {
         // Wait for the printer to be ready;
-        if(data.startsWith('Ready')) {
+        if(data.startsWith('Ready') || data.startsWith('OK')) {
           console.log('Printer ready');
           started = true;
         }
