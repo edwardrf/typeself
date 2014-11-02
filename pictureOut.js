@@ -142,7 +142,7 @@ async.waterfall([
         }
         console.log('done');
         if(cmdBuf.length == 0 && bufLen == 0){
-          finishedHandler = setTimeout(callback, 3000);
+          finishedHandler = setTimeout(callback, 10000);
         }
       }
     });
