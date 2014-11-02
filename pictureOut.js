@@ -141,7 +141,7 @@ async.waterfall([
           // console.log('d');
         }
         console.log('done');
-        if(cmdBuf.length == 0 && bufLen == 0){
+        if(content.length == 0 && bufLen == 0){
           finishedHandler = setTimeout(callback, 10000);
         }
       }
@@ -153,5 +153,6 @@ async.waterfall([
   console.log("All Done");
   serialPort.close(function(err) {
     console.log('Port closed');
+    process.exit(0);
   });
 });

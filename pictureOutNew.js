@@ -80,7 +80,7 @@ async.waterfall([
       }
       while(low.length > 0) {
         var ch = low.charAt(0);
-        if(ksft[ch.charCodeAt(0) - 33] != -1){
+        if(ch != ' ' && ksft[ch.charCodeAt(0) - 33] != -1){
           cmdBuf += 'p' + ch;
         }
         cmdBuf += 'm0 ' + moveUnit;
@@ -89,7 +89,7 @@ async.waterfall([
       while(cap.length > 0) {
         var ch = cap.charAt(cap.length - 1);
         cmdBuf += 'm1 ' + moveUnit;
-        if(ksft[ch.charCodeAt(0) - 33] != -1){
+        if(ch != ' ' && ksft[ch.charCodeAt(0) - 33] != -1){
           cmdBuf += 'p' + ch;
         }
         cap = cap.substr(0, cap.length - 1);
@@ -122,15 +122,12 @@ async.waterfall([
         // Wait for the printer to be ready;
         if(data.startsWith('Ready') || data.startsWith('OK')) {
           console.log('Printer ready');
+          serialPort.write('R');
           started = true;
         }
       }
       if(started) {
         var bufLen = 30;
-        if(data.startsWith('Ready')){
-          serialPort.write('R');
-          bufLen = 0;
-        }
 
         if(data.startsWith('OK')){
           bufLen = parseInt(data.substr(2));
