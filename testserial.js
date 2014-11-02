@@ -25,12 +25,7 @@ async.waterfall([
   function(callback) {
     // Build the name content.
     var nameWidth = (name.length + 4) * moveUnit + 120;
-    cmdBuf = 'Crr0 1500Em1 ' + nameWidth;
-    for(var i = 0; i < name.length; i++) {
-      cmdBuf += 'p' + name.charAt(i);
-      cmdBuf += 'm0 ' + moveUnit;
-    }
-    cmdBuf += 'Rr1 21000';
+    cmdBuf = 'RER';
     callback();
   },
   sp.list,
@@ -39,7 +34,7 @@ async.waterfall([
     serialPort = new SerialPort(ports[ports.length - 1].comName, {
       baudrate: 115200,
       parser: sp.parsers.readline("\r\n")
-    });
+    }, false);
     setTimeout(function(){
       callback(null, serialPort);
     }, 1000);
