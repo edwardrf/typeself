@@ -82,7 +82,5 @@ async.waterfall([
 ], function(err) {
   console.log(err);
   console.log("All Done");
-  setTimeout(function(){
-    serialPort.close();
-  }, 3000);
+  serialPort.close();
 });
